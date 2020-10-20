@@ -1,33 +1,37 @@
 #!/usr/bin/env nextflow
 
-ch_flat = Channel.fromFilePairs("${params.s3_folder}/*{vcf.gz,csi}", flat: true)
-ch_notflat = Channel.fromFilePairs("${params.s3_folder}/*{vcf.gz,csi}")
+ch_flat = Channel.fromFilePairs("${params.s3_folder}/${params.regex}*.{vcf.gz,vcf.gz.csi}", flat: true)
 
-process print_filename {
+(ch_print, ch_use) = ch_flat.into(2)
+
+process print_name {
   echo true
-  
-  input: 
-  set val(vcf_basename), val(vcf_path), val(csi_path) from ch_flat
-  
-  output: 
-  file("${vcf_basename}_print.txt") into ch_force_serial
+  tag "${name}"
+  maxForks 1
 
+  input: 
+  set val(name), val(vcf_path), val(csi_path) from ch_flat
+  
   script:
   """
   echo "pre: $vcf_basename\nvcf: $vcf_path\ncsi: $csi_path" 
-  echo "pre: $vcf_basename\nvcf: $vcf_path\ncsi: $csi_path" > ${vcf_basename}_print.txt
+  echo "pre: $vcf_basename\nvcf: $vcf_path\ncsi: $csi_path"
   """
 }
 
-process print_filename_not_flat {
+process get_vcf {
   echo true
-  
+  tag: "${name}"
+  maxForks 10
+
   input: 
-  set val(vcf_basename), val(pair) from ch_notflat
-  file(pseudo_dependency) from ch_force_serial
+  set val(name), file(vcf), file(csi) from ch_flat
+  
+  output: 
 
   script:
   """
-  echo "pre: $vcf_basename\npair: $pair"
+  mv $vcf vcf_tmp && mv vcf_tmp ${name}.vcf.gz
+  mv $csi csi_tmp && mv csi_tmp ${name}.vcf.gz
   """
 }
