@@ -21,7 +21,7 @@ process print_name {
 
 process get_vcf {
 
-  publishDir "results", mode: copy
+  publishDir 'results', mode: 'copy'
 
   echo true
   tag "${name}"
