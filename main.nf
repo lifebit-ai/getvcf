@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-ch_flat = Channel.fromFilePairs("${params.s3_folder}/${params.regex}*.{vcf.gz,vcf.gz.csi}", flat: true)
+ch_flat = Channel.fromFilePairs("${params.s3_folder}/*${params.regex}*.{vcf.gz,vcf.gz.csi}", flat: true)
 
 (ch_print, ch_use) = ch_flat.into(2)
 
@@ -20,9 +20,14 @@ process print_name {
 }
 
 process get_vcf {
+
+  publishDir "results", mode: copy
+
   echo true
   tag "${name}"
   maxForks 10
+  cpus 4
+  
 
   input: 
   set val(name), file(vcf), file(csi) from ch_use
