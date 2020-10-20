@@ -14,8 +14,8 @@ process print_name {
   
   script:
   """
-  echo "pre: $vcf_basename\nvcf: $vcf_path\ncsi: $csi_path" 
-  echo "pre: $vcf_basename\nvcf: $vcf_path\ncsi: $csi_path"
+  echo "pre: $name\nvcf: $vcf_path\ncsi: $csi_path" 
+  echo "pre: $name\nvcf: $vcf_path\ncsi: $csi_path"
   """
 }
 
