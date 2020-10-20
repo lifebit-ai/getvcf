@@ -21,7 +21,7 @@ process print_name {
 
 process get_vcf {
   echo true
-  tag: "${name}"
+  tag "${name}"
   maxForks 10
 
   input: 
