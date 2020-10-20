@@ -10,7 +10,7 @@ process print_name {
   maxForks 1
 
   input: 
-  set val(name), val(vcf_path), val(csi_path) from ch_flat
+  set val(name), val(vcf_path), val(csi_path) from ch_print
   
   script:
   """
@@ -25,7 +25,7 @@ process get_vcf {
   maxForks 10
 
   input: 
-  set val(name), file(vcf), file(csi) from ch_flat
+  set val(name), file(vcf), file(csi) from ch_use
   
   output: 
 
