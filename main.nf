@@ -32,11 +32,13 @@ process get_vcf {
   input: 
   set val(name), file(vcf), file(csi) from ch_use
   
-  output: 
+  output:
+  file("vcfs/*")
 
   script:
   """
-  mv $vcf vcf_tmp && mv vcf_tmp ${name}.vcf.gz
-  mv $csi csi_tmp && mv csi_tmp ${name}.vcf.gz
+  mkdir vcfs
+  mv $vcf vcf_tmp && mv vcf_tmp vcfs/${name}.vcf.gz
+  mv $csi csi_tmp && mv csi_tmp vcfs/${name}.vcf.gz.csi
   """
 }
